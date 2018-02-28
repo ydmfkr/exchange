@@ -1,8 +1,7 @@
+var FixedSupplyToken = artifacts.require("./FixedSupplyToken.sol");
+var Exchange = artifacts.require("./Exchange.sol");
 
-var MetaCoin = artifacts.require("./MetaCoin.sol");
-
-module.exports = function(deployer) {
-  deployer.deploy(ConvertLib);
-  deployer.link(ConvertLib, MetaCoin);
-  deployer.deploy(MetaCoin);
+module.exports = function (deployer) {
+    deployer.deploy(FixedSupplyToken);
+    deployer.deploy(Exchange);
 };

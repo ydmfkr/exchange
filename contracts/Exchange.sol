@@ -66,14 +66,21 @@ contract Exchange is owned {
     //////////////////////////////////
 
     function depositEther() payable {
+        require(balanceEthForAddress[msg.sender] + msg.value >= balanceEthForAddress[msg.sender]);
+        balanceEthForAddress[msg.sender] += msg.value;
 
     }
 
     function withdrawEther(uint amountInWei){
-
+        require(balanceEthForAddress[msg.sender] - amountInWei >= 0);
+        require(balanceEthForAddress[msg.sender] - amountInWei <= balanceEthForAddress[msg.sender]);
+        balanceEthForAddress[msg.sender] -= amountInWei;
+        msg.sender.transfer(amountInWei);
     }
 
     function getBalanceInWer() constant returns (uint){
+
+        return balanceEthForAddress[msg.sender];
 
     }
 
@@ -81,17 +88,53 @@ contract Exchange is owned {
     // TOKEN MANAGEMENT //
     //////////////////////
 
-    function addToken(string symbolName, address erc20TokenAddress) onlyOwner{
-
+    function addToken(string symbolName, address erc20TokenAddress) onlyOwner {
+        require(!hasToken(symbolName));
+        symbolNameIndex++;
+        tokens[symbolNameIndex].symbolName = symbolName;
+        tokens[symbolNameIndex].tokenContract = erc20TokenAddress;
     }
 
     function hasToken(string symbolName) constant returns (bool){
-
+        uint8 index = getSymbolIndex(symbolName);
+        if (index == 0) {
+            return false;
+        }
+        return true;
     }
 
     function getSymbolIndex(string symbolName) internal returns (uint8){
+        for (uint8 i = 1; i <= symbolNameIndex; i++) {
+            if (stringEquals(tokens[i].symbolName, symbolName)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    function getSymbolIndexOrThrow(string symbolName) returns (uint8){
+        uint8 index = getSymbolIndex(symbolName);
+        require(index > 0);
+        return index;
+    }
+
+    /////////////////////////////////
+    // STRING COMPARISON FUNCTION  //
+    /////////////////////////////////
+
+    function stringEqual(string storage _a, string storage _b) internal returns (bool){
+        bytes storage a = bytes(_a);
+        bytes memory b = bytes(_b);
+        if (a.length != b.length)
+            return false;
+        for (uint i = 0; i < a.length; i++)
+            if (a[i] != b[i])
+                return false;
+
+        return true;
 
     }
+
 
     //////////////////////////////////
     // DEPOSIT AND WITHDRAWAL TOKEN //
@@ -100,6 +143,7 @@ contract Exchange is owned {
     }
 
     function withdrawToken(string symbolName, uint amount) {
+
     }
 
     function getBalance(string symbolName) constant returns (uint) {

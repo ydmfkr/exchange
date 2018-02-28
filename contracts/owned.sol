@@ -1,6 +1,6 @@
 pragma solidity ^0.4.0;
 
-contract owner {
+contract owned {
 
     address owner;
 
@@ -10,7 +10,7 @@ contract owner {
         }
     }
 
-    function owner(){
+    function owned(){
         owner = msg.sender;
     }
 }
