@@ -516,6 +516,9 @@ contract Exchange is owned {
     // CANCEL LIMIT ORDER LOGIC //
     //////////////////////////////
     function cancelOrder(string symbolName, bool isSellOrder, uint priceInWei, uint offerKey) {
+
+
+
     }
 
 
